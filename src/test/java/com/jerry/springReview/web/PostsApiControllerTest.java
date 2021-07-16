@@ -90,4 +90,21 @@ public class PostsApiControllerTest {
         assertThat(all.get(0).getTitle()).isEqualTo(expectedTitle);
         assertThat(all.get(0).getContent()).isEqualTo(expectedContent);
     }
+
+    @Test
+    public void delete_posts() throws Exception {
+        Posts savedPost = postsRepository.save(Posts.builder()
+                .title("title")
+                .content("content")
+                .author("jerry")
+                .build());
+
+        Long deleteId = savedPost.getId();
+        String url =  "http://localhost:"+port+"/api/v1/posts/"+deleteId;
+
+        ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.DELETE, null, Long.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isEqualTo(deleteId);
+    }
 }
